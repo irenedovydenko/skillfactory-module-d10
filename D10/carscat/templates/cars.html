@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Каталог автомобилей</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+        crossorigin="anonymous">
+  <style>
+    .cart {
+      margin-left: 10px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+<div class="row">
+  <div class="col d-flex justify-content-center">
+    <form action="{% url 'cars_list' %}" method="get" class="form-inline">
+      <div class="form-group mb-2">
+        <label for="year_from">Год выпуска от: </label>
+      </div>
+      <div class="form-group mb-2 mx-sm-3">
+        <select name="year_from" id="year_from">
+          {% for i in year_range %}
+            <option value="{{ i }}">{{ i }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group mb-2">
+        <label for="year_to">до: </label>
+      </div>
+      <div class="form-group mb-2 mx-sm-3">
+        <select name="year_to" id="year_to">
+          {% for i in year_range %}
+            <option value="{{ i }}">{{ i }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group mb-2 mx-sm-3">
+          <select name="color" id="color">
+            {% for k, v in colors.items %}
+              <option value="{{ k }}">{{ v }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      <div class="form-group mb-2 mx-sm-3">
+        <select name="transmission" id="transmission">
+          {% for k, v in transmissions.items %}
+            <option value="{{ k }}">{{ v }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group mb-2">
+        <label for="search">Поиск: </label>
+      </div>
+      <div class="form-group mx-sm-3 mb-2">
+        <input type="text" id="search" name="search" style="width: 80px" value="{{ query_dict.search }}">
+      </div>
+      <div class="form-group mx-sm-3 mb-2">
+        <button type="submit" class="button btn-outline-primary">Искать</button>
+      </div>
+    </form>
+  </div>
+</div>
+{#{% include "pagination.html" with page=page_obj %}#}
+  <div class="row justify-content-center">
+    <div class="col d-flex justify-content-center">
+    <h6>Параметры запроса:
+      Год от {{ query_dict.year_from }}
+      до {{ query_dict.year_to }},
+      цвет: {{ query_dict.color }},
+      тип КПП: {{ query_dict.transmission }},
+      строка запроса: "{{ query_dict.search }}"
+    </h6>&nbsp;&nbsp;&nbsp;&nbsp;
+    <h6><a href="{% url 'cars_list'%}">Сбросить фильтры</a> </h6>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col d-flex flex-wrap justify-content-center car-cart">
+      {% for car in cars %}
+    <div class="cart border border-success" style="width: 20rem;">
+      <div class="card-body">
+        <h6 class="card-title">Модель: {{ car.model }}</h6>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Производитель: {{ car.vendor }}</li>
+            <li class="list-group-item">Год выпуска: {{ car.year }}</li>
+            <li class="list-group-item">Трансмиссия: {{ car.get_transmission_display }}</li>
+            <li class="list-group-item">Цвет: {{ car.get_color_display }}</li>
+          </ul>
+      </div>
+    </div>
+  {% endfor %}
+    </div>
+  </div>
+{#{% include "pagination.html" with page=page_obj %}#}
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function(event) {
+      let yearToElem = document.getElementById('year_to');
+
+      {% if query_dict.year_to %}
+        yearToElem.value = '{{ query_dict.year_to }}';
+      {% else %}
+        yearToElem.value = '2020';
+      {% endif %}
+
+      {% if query_dict.year_from %}
+        let yearFromElem = document.getElementById('year_from');
+        yearFromElem.value = '{{ query_dict.year_from }}';
+      {% endif %}
+
+      {% if query_dict.color %}
+        let colorElem = document.getElementById('color');
+        colorElem.value = '{{ query_dict.color }}';
+      {% endif %}
+
+      {% if query_dict.color %}
+        let transElem = document.getElementById('transmission');
+        transElem.value = '{{ query_dict.transmission }}';
+      {% endif %}
+});
+</script>
+</body>
+</html>

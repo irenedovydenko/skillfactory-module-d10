@@ -1,0 +1,19 @@
+<div class="row justify-content-center">
+  <div class="col-4 d-flex justify-content-center">
+      <ul class="pagination">
+          {% if page.has_previous %}
+            <li class="page-item">
+              <a href="?page={{ page.previous_page_number }}">Назад</a>
+            </li>
+          {% endif %}
+        &nbsp;<li class="page-item">
+          <a href="{% url 'cars_list' %}">В начало (без фильтров)</a>
+        </li>
+          {% if page.has_next %}
+            <li class="page-item">
+              <a href="?page={{ page.next_page_number }}">Вперёд</a>
+            </li>
+          {% endif %}
+      </ul>
+  </div>
+</div>
